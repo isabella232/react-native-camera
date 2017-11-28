@@ -7,7 +7,7 @@ The comprehensive camera module for React Native. Including photographs, videos,
 - Pull Requests are welcome, if you open a pull request we will do our best to get to it in a timely manner
 - Pull Request Reviews and even more welcome! we need help testing, reviewing, and updating open PRs
 - If you are interested in contributing more actively, please contact me (same username on Twitter, Facebook, etc.) Thanks!
-- We are now on [Open Collective](https://opencollective.com/react-native-camera#sponsor)! Contributions are appreciated and will be used to fund core contributors. [more details](#open-collective) 
+- We are now on [Open Collective](https://opencollective.com/react-native-camera#sponsor)! Contributions are appreciated and will be used to fund core contributors. [more details](#open-collective)
 
 #### Breaking Changes
 ##### android build tools has been bumped to 25.0.2, please update (can be done via android cli or AndroidStudio)
@@ -232,27 +232,78 @@ Will call the specified method when a barcode is detected in the camera's view.
 
 Event contains `data` (the data in the barcode) and `bounds` (the rectangle which outlines the barcode.)
 
-The following barcode types can be recognised:
+The following barcode types can be recognised for iOS:
 
 - `aztec`
-- `code128`
 - `code39`
 - `code39mod43`
 - `code93`
-- `ean13`
+- `code128`
+- `datamatrix` (when available)
 - `ean8`
+- `ean13`
+- `interleaved2of5` (when available)
+- `itf14` (when available)
 - `pdf417`
 - `qr`
 - `upce`
-- `interleaved2of5` (when available)
-- `itf14` (when available)
-- `datamatrix` (when available)
+
+The following barcode types can be recognised for Android:
+
+- `aztec`
+- `codabar`
+- `code39`
+- `code93`
+- `code128`
+- `datamatrix`
+- `ean8`
+- `ean13`
+- `itf14`
+- `maxicode`
+- `qr`
+- `pdf417`
+- `rss`
+- `rss14`
+- `upca`
+- `upce`
+- `upc`
 
 The barcode type is provided in the `data` object.
 
 #### `barCodeTypes`
 
 An array of barcode types to search for. Defaults to all types listed above. No effect if `onBarCodeRead` is undefined.
+
+Use static const `Camera.constants.BarCodeType` for selecting scan types in `barCodeTypes` and to very the results in `onBarCodeRead`.
+
+#### `barcodeFinderVisible`
+
+Displays an rectangle over the camera to show the area of barcode scanning. If this is used the actual area that is scanned in cropped to the rectangle. This can significantly increase the performance.
+
+Adjust size and style:
+`barcodeFinderWidth`,
+`barcodeFinderHeight`,
+`barcodeFinderStyle`
+
+  The default viewer style has borderColor and borderWidth.
+
+
+##### Make a custom barcode finder
+
+  1. make a copy of barcode-finder.js and place it in your project
+  2. add it to your project
+  3. add it as a child to the Camera
+```javascript
+<Camera>
+    <MyCustomBarcodeFinder />
+</Camera>
+```
+**NOTE:** The scan area is cropped and as long the first to <View> components remain intact it should show the correct size.
+```javascript
+<View style={[styles.container]}>
+    <View style={[styles.finder, this.getSizeStyles()]}>
+        { place your design here }
+```
 
 #### `flashMode`
 
@@ -311,8 +362,8 @@ If set to `true`, the image returned will be mirrored.
 If set to `true`, the image returned will be rotated to the _right way up_.  WARNING: It uses a significant amount of memory and my cause your application to crash if the device cannot provide enough RAM to perform the rotation.
 
 (_If you find that you need to use this option because your images are incorrectly oriented by default,
-could please submit a PR and include the make model of the device.  We believe that it's not 
-required functionality any more and would like to remove it._) 
+could please submit a PR and include the make model of the device.  We believe that it's not
+required functionality any more and would like to remove it._)
 
 ## Component instance methods
 
